@@ -1,20 +1,11 @@
 {
-  "scripts": {
-    "build": "next build",
-    "start": "next start -p $PORT"
-  }
-}
-
-
-{
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start -p $PORT"
   },
   "dependencies": {
     "next": "15.2.3",
