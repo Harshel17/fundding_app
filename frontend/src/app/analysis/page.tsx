@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 
 export default function AnalysisPage() {
-  const [analysisData, setAnalysisData] = useState([]);
+  const [analysisData, setAnalysisData] = useState<
+    { principal_amount: number; interest_rate: number; generated_interest: number; created_at: string }[]
+  >([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -11,9 +13,10 @@ export default function AnalysisPage() {
     fetchAnalysis();
   }, []);
 
+  // Fetch general analysis data
   const fetchAnalysis = async () => {
     try {
-      const response = await fetch("http://fundding-backend2.up.railway.app/funds/get_analysis");
+      const response = await fetch("https://funddingbackend2.up.railway.app/funds/get_analysis");
       const data = await response.json();
       setAnalysisData(data);
     } catch (error) {
@@ -21,11 +24,15 @@ export default function AnalysisPage() {
     }
   };
 
+  // Fetch filtered analysis by date
   const fetchFilteredAnalysis = async () => {
-    if (!startDate || !endDate) return;
+    if (!startDate || !endDate) {
+      alert("Please select both start and end dates.");
+      return;
+    }
     try {
       const response = await fetch(
-        `http://fundding-backend2.up.railway.app/funds/get_analysis_by_date?start_date=${startDate}&end_date=${endDate}`
+        `https://funddingbackend2.up.railway.app/funds/get_analysis_by_date?start_date=${startDate}&end_date=${endDate}`
       );
       const data = await response.json();
       setAnalysisData(data);
@@ -43,13 +50,13 @@ export default function AnalysisPage() {
         <label className="font-medium">Filter by Date:</label>
         <input
           type="date"
-          className="border p-2 rounded"
+          className="border p-2 rounded text-gray-900"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
         />
         <input
           type="date"
-          className="border p-2 rounded"
+          className="border p-2 rounded text-gray-900"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />
@@ -70,17 +77,19 @@ export default function AnalysisPage() {
           <ul className="space-y-4">
             {analysisData.map((item, index) => (
               <li key={index} className="p-4 border rounded-md shadow">
-                <p className="text-lg font-bold">{item.description}</p>
+                <p className="text-lg font-bold">Investment Report {index + 1}</p>
                 <p className="text-gray-600">
-                  Principal: <strong>${item.principal_amount}</strong>
+                  <strong>Principal:</strong> ${item.principal_amount}
                 </p>
                 <p className="text-gray-600">
-                  Interest Rate: <strong>{item.interest_rate}%</strong>
+                  <strong>Interest Rate:</strong> {item.interest_rate}%
                 </p>
                 <p className="text-gray-600">
-                  Generated Interest: <strong>${item.generated_interest}</strong>
+                  <strong>Generated Interest:</strong> ${item.generated_interest}
                 </p>
-                <p className="text-gray-500 text-sm">Created At: {new Date(item.created_at).toLocaleString()}</p>
+                <p className="text-gray-500 text-sm">
+                  <strong>Created At:</strong> {new Date(item.created_at).toLocaleString()}
+                </p>
               </li>
             ))}
           </ul>
