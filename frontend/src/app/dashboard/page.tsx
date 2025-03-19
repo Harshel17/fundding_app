@@ -4,63 +4,77 @@ import Sidebar from "../components/Sidebar";
 import { useEffect, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
+// Define Types for API Responses
+type FundSummary = {
+  total_funds: number;
+  funds_count: number;
+  average_fund: number;
+};
+
+type ProfitSummary = {
+  estimated_profit: number;
+};
+
+type AnalysisData = {
+  total_funds: number;
+  funds_count: number;
+  average_fund: number;
+  recent_fund: {
+    source: string;
+    amount: number;
+    received_date: string;
+  };
+};
+
 export default function Dashboard() {
-  const [fundSummary, setFundSummary] = useState(null);
-  const [profit, setProfit] = useState(null);
-  const [analysisData, setAnalysisData] = useState(null);
+  const [fundSummary, setFundSummary] = useState<FundSummary | null>(null);
+  const [profit, setProfit] = useState<ProfitSummary | null>(null);
+  const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+
+  const API_BASE = "https://funddingbackend2-production.up.railway.app";
 
   // Function to fetch funds data
   const fetchFunds = async () => {
     try {
-      const response = await fetch("http://funddingbackend2-production.up.railway.app/funds/summary");
+      const response = await fetch(`${API_BASE}/funds/summary`);
       if (!response.ok) throw new Error("Failed to fetch funds data");
-  
-      const data = await response.json();
+
+      const data: FundSummary = await response.json();
       setFundSummary(data);
     } catch (error) {
       console.error("Error fetching funds:", error);
     }
   };
-  
-  // Fetch funds on load
-  useEffect(() => {
-    fetchFunds();
-  }, []);
-  
+
   // Function to fetch profit data
   const fetchProfit = async () => {
     try {
-      const response = await fetch("http://funddingbackend2-production.up.railway.app/funds/profit");
-      const data = await response.json();
+      const response = await fetch(`${API_BASE}/funds/profit`);
+      if (!response.ok) throw new Error("Failed to fetch profit data");
+
+      const data: ProfitSummary = await response.json();
       setProfit(data);
     } catch (error) {
       console.error("Error fetching profit:", error);
     }
   };
 
+  // Function to fetch financial analysis data
   const fetchAnalysis = async () => {
     try {
-      const response = await fetch("http://funddingbackend2-production.up.railway.app/funds/generate_analysis");
+      const response = await fetch(`${API_BASE}/funds/generate_analysis`);
       if (!response.ok) throw new Error("Failed to fetch analysis data");
-      
-      const data = await response.json();
-      setAnalysisData(data);  // ✅ Updates the UI
+
+      const data: AnalysisData = await response.json();
+      setAnalysisData(data);
     } catch (error) {
       console.error("Error fetching analysis:", error);
     }
   };
-  
-  // Fetch analysis every 5 seconds to ensure updates appear
-  useEffect(() => {
-    fetchAnalysis(); // Initial fetch
-    const interval = setInterval(fetchAnalysis, 5000); // Auto-refresh every 5 seconds
-    return () => clearInterval(interval);
-  }, []);
-  
-  
-  // Fetch funds and profit when the page loads
+
+  // Fetch funds, profit, and analysis on page load
   useEffect(() => {
     fetchFunds();
     fetchProfit();
