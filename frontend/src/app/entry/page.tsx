@@ -10,9 +10,10 @@ export default function EntryForm() {
     compounded: false,
   });
 
-  const handleChange = (e) => {
+  // ✅ Explicitly type event in handleChange function
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: type === "checkbox" ? checked : value,
@@ -22,18 +23,23 @@ export default function EntryForm() {
   // ✅ Function to refresh the analysis data after new entry
   const fetchAnalysis = async () => {
     try {
-      const response = await fetch("http://funddingbackend2-production.up.railway.app/funds/generate_analysis");
+      const response = await fetch(
+        "https://funddingbackend2-production.up.railway.app/funds/generate_analysis"
+      );
+      if (!response.ok) throw new Error("Failed to fetch updated analysis data");
+
       const data = await response.json();
-      console.log("Updated Analysis Data:", data);
+      console.log("✅ Updated Analysis Data:", data);
     } catch (error) {
-      console.error("Error fetching analysis:", error);
+      console.error("❌ Error fetching analysis:", error);
     }
   };
 
-  const handleSubmit = async (e) => {
+  // ✅ Handle form submission
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // ✅ Convert number fields to integers/floats
+    // ✅ Convert number fields to proper types
     const formattedData = {
       ...formData,
       principal_amount: parseFloat(formData.principal_amount),
@@ -41,29 +47,35 @@ export default function EntryForm() {
       time_period: parseInt(formData.time_period),
     };
 
-    const response = await fetch("http://funddingbackend2-production.up.railway.app/funds/add_entry", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formattedData),
-    });
+    try {
+      const response = await fetch(
+        "https://funddingbackend2-production.up.railway.app/funds/add_entry",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formattedData),
+        }
+      );
 
-    if (response.ok) {
-      alert("✅ Investment added successfully!");
-      
-      // ✅ Reset the form after successful submission
-      setFormData({
-        description: "",
-        principal_amount: "",
-        interest_rate: "",
-        time_period: "",
-        compounded: false,
-      });
+      if (response.ok) {
+        alert("✅ Investment added successfully!");
 
-      // ✅ Fetch updated analysis data to reflect changes
-      fetchAnalysis();
+        // ✅ Reset form after successful submission
+        setFormData({
+          description: "",
+          principal_amount: "",
+          interest_rate: "",
+          time_period: "",
+          compounded: false,
+        });
 
-    } else {
-      alert("❌ Error adding investment.");
+        // ✅ Fetch updated analysis data
+        fetchAnalysis();
+      } else {
+        throw new Error("Submission failed");
+      }
+    } catch (error) {
+      alert("❌ Error adding investment: " + error);
     }
   };
 
@@ -71,10 +83,9 @@ export default function EntryForm() {
     <div className="flex min-h-screen bg-gray-100 p-6">
       <div className="w-full max-w-lg mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Add Investment Entry</h1>
-        
+
         <div className="bg-white shadow-md rounded-lg p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
-            
             {/* Investment Description */}
             <div>
               <label className="block text-gray-800 font-semibold">Investment Description</label>
@@ -98,6 +109,7 @@ export default function EntryForm() {
                 onChange={handleChange}
                 className="border p-2 rounded w-full text-gray-900 bg-white"
                 required
+                min="1"
               />
             </div>
 
@@ -112,6 +124,7 @@ export default function EntryForm() {
                 onChange={handleChange}
                 className="border p-2 rounded w-full text-gray-900 bg-white"
                 required
+                min="0"
               />
             </div>
 
@@ -125,6 +138,7 @@ export default function EntryForm() {
                 onChange={handleChange}
                 className="border p-2 rounded w-full text-gray-900 bg-white"
                 required
+                min="1"
               />
             </div>
 
@@ -147,7 +161,6 @@ export default function EntryForm() {
             >
               Submit
             </button>
-
           </form>
         </div>
       </div>
