@@ -14,7 +14,7 @@ export default function Dashboard() {
   // Function to fetch funds data
   const fetchFunds = async () => {
     try {
-      const response = await fetch("http://fundding-backend2.up.railway.app/funds/summary");
+      const response = await fetch("http://funddingbackend2-production.up.railway.app/funds/summary");
       if (!response.ok) throw new Error("Failed to fetch funds data");
   
       const data = await response.json();
@@ -32,7 +32,7 @@ export default function Dashboard() {
   // Function to fetch profit data
   const fetchProfit = async () => {
     try {
-      const response = await fetch("http://fundding-backend2.up.railway.app/funds/profit");
+      const response = await fetch("http://funddingbackend2-production.up.railway.app/funds/profit");
       const data = await response.json();
       setProfit(data);
     } catch (error) {
@@ -42,7 +42,7 @@ export default function Dashboard() {
 
   const fetchAnalysis = async () => {
     try {
-      const response = await fetch("http://fundding-backend2.up.railway.app/funds/generate_analysis");
+      const response = await fetch("http://funddingbackend2-production.up.railway.app/funds/generate_analysis");
       if (!response.ok) throw new Error("Failed to fetch analysis data");
       
       const data = await response.json();

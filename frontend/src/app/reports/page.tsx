@@ -7,7 +7,7 @@ export default function Reports() {
 
   useEffect(() => {
     async function fetchReports() {
-      const response = await fetch("http://fundding-backend2.up.railway.app/funds/get_analysis");
+      const response = await fetch("http://funddingbackend2-production.up.railway.app/funds/get_analysis");
       const data = await response.json();
       setAnalysisReports(data);
     }

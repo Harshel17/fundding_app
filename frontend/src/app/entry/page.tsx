@@ -22,7 +22,7 @@ export default function EntryForm() {
   // ✅ Function to refresh the analysis data after new entry
   const fetchAnalysis = async () => {
     try {
-      const response = await fetch("http://fundding-backend2.up.railway.app/funds/generate_analysis");
+      const response = await fetch("http://funddingbackend2-production.up.railway.app/funds/generate_analysis");
       const data = await response.json();
       console.log("Updated Analysis Data:", data);
     } catch (error) {
@@ -41,7 +41,7 @@ export default function EntryForm() {
       time_period: parseInt(formData.time_period),
     };
 
-    const response = await fetch("http://fundding-backend2.up.railway.app/funds/add_entry", {
+    const response = await fetch("http://funddingbackend2-production.up.railway.app/funds/add_entry", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formattedData),

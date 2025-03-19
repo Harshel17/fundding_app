@@ -16,7 +16,7 @@ export default function AnalysisPage() {
   // Fetch general analysis data
   const fetchAnalysis = async () => {
     try {
-      const response = await fetch("https://funddingbackend2.up.railway.app/funds/get_analysis");
+      const response = await fetch("https://funddingbackend2-production.up.railway.app/funds/get_analysis");
       const data = await response.json();
       setAnalysisData(data);
     } catch (error) {
