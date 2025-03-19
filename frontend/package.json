@@ -1,8 +1,10 @@
+{
   "scripts": {
-  "build": "next build",
-  "start": "start": "next start -p $PORT"
-
+    "build": "next build",
+    "start": "next start -p $PORT"
+  }
 }
+
 
 {
   "name": "frontend",
